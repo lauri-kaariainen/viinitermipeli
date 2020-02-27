@@ -1,2 +1,0 @@
-# viinitermipeli
-Created with CodeSandbox
