@@ -1,15 +1,16 @@
 import "./style";
 import { render } from "preact";
-import { useState } from "preact/compat";
-import { Result } from "./result";
+import { useState } from "preact/hooks";
+import { Term } from "./components/Term.js";
 import { getSeededSampleOfN, shuffle, uniqueShallow } from "./helpers.js";
 import { getRealTerms } from "./getTerms.js";
-import { WineList } from "./components/WineList.js";
-import ALLWINETERMS from "./viinitermit.json";
+import { SearchedList } from "./components/SearchedList.js";
+import ALLDRINKTERMS from "./viinitermit.json";
+import { PreStart } from "./components/gamestates/PreStart.js";
 
 const GAMESTATES = {
   PRESTART: 0,
-  GETWINE: 1,
+  GETDRINK: 1,
   GUESSING: 2,
   RESULT: 3
 };
@@ -17,17 +18,17 @@ const GAMESTATES = {
 //lower is easier
 const DIFFICULTYLEVEL = 6;
 
-const possibleSeed = Math.floor(ALLWINETERMS.length * Math.random());
+const possibleSeed = Math.floor(ALLDRINKTERMS.length * Math.random());
 
 function App() {
   const [gameState, setGameState] = useState(GAMESTATES.PRESTART);
   const [inputState, setInputState] = useState("");
   const [guessableTermsState, setGuessableTermsState] = useState([]);
-  const [searchedWines, setSearchedWines] = useState([]);
+  const [searchedDrinks, setSearchedDrinks] = useState([]);
   const [guessesList, setGuessesList] = useState([]);
-  const [correctWineTerms, setCorrectWineTerms] = useState([]);
+  const [correctDrinkTerms, setCorrectDrinkTerms] = useState([]);
   const [seed, setSeed] = useState(possibleSeed);
-  const fakeSample = getSeededSampleOfN(ALLWINETERMS, DIFFICULTYLEVEL, seed);
+  const fakeSample = getSeededSampleOfN(ALLDRINKTERMS, DIFFICULTYLEVEL, seed);
 
   const handleInputChange = ev => {
     if (ev.target.value.length > 2) {
@@ -44,17 +45,17 @@ function App() {
           }))
         )
         // .then(e => (console.log(e), e))
-        .then(e => setSearchedWines(e));
+        .then(e => setSearchedDrinks(e));
     }
     setInputState(ev.target.value);
   };
 
-  const handleWineChoose = id =>
+  const handleDrinkChoose = id =>
     getRealTerms(id)
-      //   .then(res => (console.log("winechooses", res), res))
+      //   .then(res => (console.log("drinkchooses", res), res))
       .then(
         res =>
-          setCorrectWineTerms(res.split(",").map(word => word.trim())) ||
+          setCorrectDrinkTerms(res.split(",").map(word => word.trim())) ||
           setGuessableTermsState(
             shuffle(
               fakeSample
@@ -65,19 +66,19 @@ function App() {
           setGameState(GAMESTATES.GUESSING)
       );
 
-  const handleGuessingWine = term => {
+  const handleGuessingDrink = term => {
     if (!guessesList.includes(term)) setGuessesList(guessesList.concat(term));
     else setGuessesList(guessesList.filter(guess => guess !== term));
   };
 
   const getCorrectGuesses = _ =>
-    guessesList.filter(guess => correctWineTerms.includes(guess));
+    guessesList.filter(guess => correctDrinkTerms.includes(guess));
 
   return (
     <div>
       <h1>
         Viinipeli{" "}
-        <span role="img" aria-label="wine glass">
+        <span role="img" aria-label="drink glass">
           🍷
         </span>
         <span
@@ -89,44 +90,32 @@ function App() {
         </span>
       </h1>
       {gameState === GAMESTATES.PRESTART ? (
-        <div class="wrapper">
-          <div class="text info">
-            Jos haluat pelata muiden kanssa, anna heille siemenluku:{" "}
-            <span class="seedcode">{seed}</span>
-          </div>
-
-          <div>
-            Tai syötä tähän heidän siemenlukunsa:
-            <input
-              class="seedInput"
-              onChange={evt => setSeed(evt.target.value)}
-              value={seed}
-            />
-          </div>
-          <button onClick={setGameState.bind(null, GAMESTATES.GETWINE)}>
-            Aloita!
-          </button>
-        </div>
-      ) : gameState === GAMESTATES.GETWINE ? (
+        <PreStart
+          seed={seed}
+          setSeed={setSeed}
+          setGameState={setGameState}
+          GAMESTATES={GAMESTATES}
+        />
+      ) : gameState === GAMESTATES.GETDRINK ? (
         <div class="wrapper">
           <div class="text info">Haetaan ensin viini hakusanalla:</div>
           <input
             class=""
-            placeholder="Tempranillo..."
+            placeholder="Laphroaig..."
             onChange={handleInputChange}
             value={inputState}
           />
-          <WineList wines={searchedWines} onClick={handleWineChoose} />
+          <SearchedList items={searchedDrinks} onClick={handleDrinkChoose} />
         </div>
       ) : gameState === GAMESTATES.GUESSING ? (
         <div class="wrapper">
-          {console.log(guessesList)}
           <div class="text info">Valitse mitkä termit koskevat tätä viiniä</div>
           <div class="list">
+            {console.log(guessableTermsState)}
             {guessableTermsState.map(term => (
-              <Result
+              <Term
                 term={term}
-                onClick={handleGuessingWine}
+                onClick={handleGuessingDrink}
                 isSelected={guessesList.includes(term)}
               />
             ))}
@@ -142,7 +131,7 @@ function App() {
         <div class="wrapper">
           <div class="text info">
             Sait oikein {getCorrectGuesses().length}/
-            {correctWineTerms.length + " "}
+            {correctDrinkTerms.length + " "}
             vaihtoehdosta
             {/* {getCorrectGuesses().length
               ? "; " + getCorrectGuesses().join(", ")
