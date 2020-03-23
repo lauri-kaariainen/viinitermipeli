@@ -101,8 +101,8 @@ function App() {
           <div class="text info">Haetaan ensin viini hakusanalla:</div>
           <input
             class=""
-            placeholder="Laphroaig..."
-            onChange={handleInputChange}
+            placeholder="Tempranillo..."
+            oninput={handleInputChange}
             value={inputState}
           />
           <SearchedList items={searchedDrinks} onClick={handleDrinkChoose} />
@@ -133,9 +133,6 @@ function App() {
             Sait oikein {getCorrectGuesses().length}/
             {correctDrinkTerms.length + " "}
             vaihtoehdosta
-            {/* {getCorrectGuesses().length
-              ? "; " + getCorrectGuesses().join(", ")
-              : ""} */}
           </div>
           <div class="text info">
             Vääriä vastauksia oli{" "}

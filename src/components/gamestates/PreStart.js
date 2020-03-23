@@ -10,7 +10,7 @@ export const PreStart = ({ seed, setSeed, setGameState, GAMESTATES }) => {
         Tai syötä tähän heidän siemenlukunsa:
         <input
           class="seedInput"
-          onChange={evt => setSeed(evt.target.value)}
+          oninput={evt => setSeed(evt.target.value)}
           value={seed}
         />
       </div>
