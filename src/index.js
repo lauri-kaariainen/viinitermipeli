@@ -1,12 +1,13 @@
 import "./style";
 import { render } from "preact";
 import { useState } from "preact/hooks";
-import { Term } from "./components/Term.js";
 import { getSeededSampleOfN, shuffle, uniqueShallow } from "./helpers.js";
 import { getRealTerms } from "./getTerms.js";
-import { SearchedList } from "./components/SearchedList.js";
-import ALLDRINKTERMS from "./viinitermit.json";
+import ALLDRINKTERMS from "./punaviinitermit.json";
 import { PreStart } from "./components/gamestates/PreStart.js";
+import { GetDrink } from "./components/gamestates/GetDrink.js";
+import { Guessing } from "./components/gamestates/Guessing.js";
+import { ShowingResults } from "./components/gamestates/ShowingResults";
 
 const GAMESTATES = {
   PRESTART: 0,
@@ -97,53 +98,26 @@ function App() {
           GAMESTATES={GAMESTATES}
         />
       ) : gameState === GAMESTATES.GETDRINK ? (
-        <div class="wrapper">
-          <div class="text info">Haetaan ensin viini hakusanalla:</div>
-          <input
-            class=""
-            placeholder="Tempranillo..."
-            oninput={handleInputChange}
-            value={inputState}
-          />
-          <SearchedList items={searchedDrinks} onClick={handleDrinkChoose} />
-        </div>
+        <GetDrink
+          handleInputChange={handleInputChange}
+          inputState={inputState}
+          searchedDrinks={searchedDrinks}
+          handleDrinkChoose={handleDrinkChoose}
+        />
       ) : gameState === GAMESTATES.GUESSING ? (
-        <div class="wrapper">
-          <div class="text info">Valitse mitkä termit koskevat tätä viiniä</div>
-          <div class="list">
-            {console.log(guessableTermsState)}
-            {guessableTermsState.map(term => (
-              <Term
-                term={term}
-                onClick={handleGuessingDrink}
-                isSelected={guessesList.includes(term)}
-              />
-            ))}
-          </div>
-          <button
-            class="guessingDoneButton green"
-            onClick={setGameState.bind(null, GAMESTATES.SHOWINGRESULTS)}
-          >
-            Lukitsen vastaukset
-          </button>
-        </div>
+        <Guessing
+          guessableTermsState={guessableTermsState}
+          handleGuessingDrink={handleGuessingDrink}
+          guessesList={guessesList}
+          setGameState={setGameState}
+          GAMESTATES={GAMESTATES}
+        />
       ) : gameState === GAMESTATES.SHOWINGRESULTS ? (
-        <div class="wrapper">
-          <div class="text info">
-            Sait oikein {getCorrectGuesses().length}/
-            {correctDrinkTerms.length + " "}
-            vaihtoehdosta
-          </div>
-          <div class="text info">
-            Vääriä vastauksia oli{" "}
-            {guessesList.length - getCorrectGuesses().length + " "} kpl
-          </div>
-          <div class="text info points">
-            Pisteesi ovat{" "}
-            {getCorrectGuesses().length -
-              (guessesList.length - getCorrectGuesses().length)}
-          </div>
-        </div>
+        <ShowingResults
+          getCorrectGuesses={getCorrectGuesses}
+          guessesList={guessesList}
+          correctDrinkTerms={correctDrinkTerms}
+        />
       ) : (
         <div />
       )}
