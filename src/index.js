@@ -3,7 +3,8 @@ import { render } from "preact";
 import { useState } from "preact/hooks";
 import { getSeededSampleOfN, shuffle, uniqueShallow } from "./helpers.js";
 import { getRealTerms } from "./getTerms.js";
-import ALLDRINKTERMS from "./punaviinitermit.json";
+import REDWINETERMS from "./punaviinitermit.json";
+import WHITEWINETERMS from "./valkoviinitermit.json";
 import { PreStart } from "./components/gamestates/PreStart.js";
 import { GetDrink } from "./components/gamestates/GetDrink.js";
 import { Guessing } from "./components/gamestates/Guessing.js";
@@ -19,7 +20,8 @@ const GAMESTATES = {
 //lower is easier
 const DIFFICULTYLEVEL = 6;
 
-const possibleSeed = Math.floor(ALLDRINKTERMS.length * Math.random());
+const possibleRedSeed = Math.floor(REDWINETERMS.length * Math.random());
+// const possibleWhiteSeed = Math.floor(WHITEWINETERMS.length * Math.random());
 
 function App() {
   const [gameState, setGameState] = useState(GAMESTATES.PRESTART);
@@ -28,9 +30,14 @@ function App() {
   const [searchedDrinks, setSearchedDrinks] = useState([]);
   const [guessesList, setGuessesList] = useState([]);
   const [correctDrinkTerms, setCorrectDrinkTerms] = useState([]);
-  const [seed, setSeed] = useState(possibleSeed);
+  const [seed, setSeed] = useState(possibleRedSeed);
   const [numOfRepeats, setNumOfRepeats] = useState(0);
-  const fakeSample = getSeededSampleOfN(ALLDRINKTERMS, DIFFICULTYLEVEL, seed);
+  const getFakeSample = type =>
+    getSeededSampleOfN(
+      type.toLowerCase() === "punaviinit" ? REDWINETERMS : WHITEWINETERMS,
+      DIFFICULTYLEVEL,
+      seed
+    );
 
   const handleInputChange = ev => {
     if (ev.target.value.length > 2) {
@@ -39,14 +46,12 @@ function App() {
           encodeURIComponent(ev.target.value)
       )
         .then(e => e.json())
-        // .then(e => console.log(e))
         .then(res =>
           res.data.map(el => ({
             id: el.attributes["product-id"],
             name: el.attributes.name
           }))
         )
-        // .then(e => (console.log(e), e))
         .then(e => setSearchedDrinks(e));
     }
     setInputState(ev.target.value);
@@ -54,14 +59,14 @@ function App() {
 
   const handleDrinkChoose = id =>
     getRealTerms(id)
-      //   .then(res => (console.log("drinkchooses", res), res))
+      // .then(res => (console.log("drinkchooses", res), res))
       .then(
         res =>
-          setCorrectDrinkTerms(res.split(",").map(word => word.trim())) ||
+          setCorrectDrinkTerms(res.terms.split(",").map(word => word.trim())) ||
           setGuessableTermsState(
             shuffle(
-              fakeSample
-                .concat(res.split(",").map(word => word.trim()))
+              getFakeSample(res.type)
+                .concat(res.terms.split(",").map(word => word.trim()))
                 .filter(uniqueShallow)
             ).sort()
           ) ||
