@@ -22,7 +22,7 @@ const DIFFICULTYLEVEL = 6;
 const possibleSeed = Math.floor(ALLDRINKTERMS.length * Math.random());
 
 function App() {
-  const [gameState, setGameState] = useState(GAMESTATES.SHOWINGRESULTS);
+  const [gameState, setGameState] = useState(GAMESTATES.PRESTART);
   const [inputState, setInputState] = useState("");
   const [guessableTermsState, setGuessableTermsState] = useState([]);
   const [searchedDrinks, setSearchedDrinks] = useState([]);
