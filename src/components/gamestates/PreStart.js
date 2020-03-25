@@ -3,7 +3,7 @@ export const PreStart = ({ seed, setSeed, setGameState, GAMESTATES }) => {
     <div class="wrapper">
       <div class="text info">
         Jos haluat pelata muiden kanssa, anna heille siemenluku{" "}
-        <span class="seedcode">{seed}</span>, jotta saatte samat arvaukset
+        <span class="seedcode bold">{seed}</span>, jotta saatte samat arvaukset
       </div>
 
       <div>

@@ -13,7 +13,7 @@ const GAMESTATES = {
   PRESTART: 0,
   GETDRINK: 1,
   GUESSING: 2,
-  RESULT: 3
+  SHOWINGRESULTS: 3
 };
 
 //lower is easier
@@ -22,13 +22,14 @@ const DIFFICULTYLEVEL = 6;
 const possibleSeed = Math.floor(ALLDRINKTERMS.length * Math.random());
 
 function App() {
-  const [gameState, setGameState] = useState(GAMESTATES.PRESTART);
+  const [gameState, setGameState] = useState(GAMESTATES.SHOWINGRESULTS);
   const [inputState, setInputState] = useState("");
   const [guessableTermsState, setGuessableTermsState] = useState([]);
   const [searchedDrinks, setSearchedDrinks] = useState([]);
   const [guessesList, setGuessesList] = useState([]);
   const [correctDrinkTerms, setCorrectDrinkTerms] = useState([]);
   const [seed, setSeed] = useState(possibleSeed);
+  const [numOfRepeats, setNumOfRepeats] = useState(0);
   const fakeSample = getSeededSampleOfN(ALLDRINKTERMS, DIFFICULTYLEVEL, seed);
 
   const handleInputChange = ev => {
@@ -75,6 +76,13 @@ function App() {
   const getCorrectGuesses = _ =>
     guessesList.filter(guess => correctDrinkTerms.includes(guess));
 
+  const restartWithSameCode = _ =>
+    setNumOfRepeats(numOfRepeats + 1) ||
+    setGameState(GAMESTATES.GUESSING) ||
+    setGuessesList([]);
+
+  const restartFromScratch = _ => window.location.reload();
+
   return (
     <div>
       <h1>
@@ -113,11 +121,19 @@ function App() {
           GAMESTATES={GAMESTATES}
         />
       ) : gameState === GAMESTATES.SHOWINGRESULTS ? (
-        <ShowingResults
-          getCorrectGuesses={getCorrectGuesses}
-          guessesList={guessesList}
-          correctDrinkTerms={correctDrinkTerms}
-        />
+        [
+          <ShowingResults
+            getCorrectGuesses={getCorrectGuesses}
+            guessesList={guessesList}
+            correctDrinkTerms={correctDrinkTerms}
+            numOfRepeats={numOfRepeats}
+          />,
+          <button onClick={restartWithSameCode}>Yritä arvata uudestaan</button>,
+          <br />,
+          <button onClick={restartFromScratch}>
+            Aloita uuden viinin kanssa
+          </button>
+        ]
       ) : (
         <div />
       )}

@@ -1,21 +1,38 @@
 export const ShowingResults = ({
   getCorrectGuesses,
   correctDrinkTerms,
-  guessesList
+  guessesList,
+  numOfRepeats
 }) => (
   <div class="wrapper">
     <div class="text info">
-      Sait oikein {getCorrectGuesses().length}/{correctDrinkTerms.length + " "}
+      {numOfRepeats ? (
+        <span>
+          {" "}
+          Toistoja: <span class="bold">{numOfRepeats}</span>
+        </span>
+      ) : (
+        <span />
+      )}
+      <br />
+      Sait oikein <span class="bold">{getCorrectGuesses().length}</span>/
+      <span class="bold">{correctDrinkTerms.length + " "}</span>
       vaihtoehdosta
     </div>
     <div class="text info">
       Vääriä vastauksia oli{" "}
-      {guessesList.length - getCorrectGuesses().length + " "} kpl
+      <span class="bold">
+        {" "}
+        {guessesList.length - getCorrectGuesses().length + " "}
+      </span>{" "}
+      kpl
     </div>
     <div class="text info points">
       Pisteesi ovat{" "}
-      {getCorrectGuesses().length -
-        (guessesList.length - getCorrectGuesses().length)}
+      <span class="bold">
+        {getCorrectGuesses().length -
+          (guessesList.length - getCorrectGuesses().length)}
+      </span>
     </div>
   </div>
 );
