@@ -2,29 +2,50 @@ import { Term } from "../Term.js";
 
 export const Guessing = ({
   guessableTermsState,
-  term,
   handleGuessingDrink,
   guessesList,
   setGameState,
-  GAMESTATES
+  GAMESTATES,
+  correctGuesses,
+  correctDrinkTerms
 }) => (
   <div class="wrapper">
     <div class="text info">Valitse mitkä termit koskevat tätä viiniä</div>
     <div class="list">
       {console.log(guessableTermsState)}
-      {guessableTermsState.map(term => (
+      {guessableTermsState.map((term) => (
         <Term
           term={term}
           onClick={handleGuessingDrink}
-          isSelected={guessesList.includes(term)}
+          isGuessed={false}
+          isCorrectlyGuessed={false}
         />
       ))}
     </div>
-    <button
+    <hr />
+    <div>
+      <span>
+        Arvattu oikein
+        <br />
+        <span class="bold">{correctGuesses.length}</span>/
+        <span class="bold">{correctDrinkTerms.length}</span>
+      </span>
+      {guessesList.map((term) => (
+        <Term
+          term={term}
+          // onClick={handleGuessingDrink}
+          isGuessed={guessesList.includes(term)}
+          isCorrectlyGuessed={correctGuesses.includes(term)}
+        />
+      ))}
+    </div>
+    <hr />
+
+    {/* <button
       class="guessingDoneButton green"
       onClick={setGameState.bind(null, GAMESTATES.SHOWINGRESULTS)}
     >
       Lukitsen vastaukset
-    </button>
+    </button> */}
   </div>
 );
