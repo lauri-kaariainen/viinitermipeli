@@ -76,6 +76,16 @@ button{
 	// filter:invert(1);
 }
 
+.selected.correctGuess {
+	background:#64a500;
+}
+.right {
+	text-align: right;
+}
+.flexSpaceBetween{
+	display: flex;
+	justify-content: space-evenly;
+}
 .green {
 	color: white;
 	background: #64a500;

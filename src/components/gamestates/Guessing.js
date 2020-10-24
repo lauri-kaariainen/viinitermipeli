@@ -10,26 +10,49 @@ export const Guessing = ({
   correctDrinkTerms
 }) => (
   <div class="wrapper">
-    <div class="text info">Valitse mitkä termit koskevat tätä viiniä</div>
-    <div class="list">
-      {console.log(guessableTermsState)}
-      {guessableTermsState.map((term) => (
-        <Term
-          term={term}
-          onClick={handleGuessingDrink}
-          isGuessed={false}
-          isCorrectlyGuessed={false}
-        />
-      ))}
-    </div>
+    {correctGuesses.length < correctDrinkTerms.length ? (
+      [
+        <div class="text info">Valitse mitkä termit koskevat tätä viiniä</div>,
+        <div class="list">
+          {guessableTermsState.map((term) => (
+            <Term
+              key={term}
+              term={term}
+              onClick={handleGuessingDrink}
+              isGuessed={false}
+              isCorrectlyGuessed={false}
+            />
+          ))}
+        </div>
+      ]
+    ) : (
+      <span></span>
+    )}
     <hr />
-    <div>
+    <div class="flexSpaceBetween">
       <span>
         Arvattu oikein
         <br />
         <span class="bold">{correctGuesses.length}</span>/
         <span class="bold">{correctDrinkTerms.length}</span>
       </span>
+      <span class="right">
+        Arvattu väärin
+        {console.log(
+          guessableTermsState,
+          correctDrinkTerms,
+          guessableTermsState.includes((e) => !correctDrinkTerms.includes(e))
+        )}
+        <br />
+        <span class="bold">{guessesList.length - correctGuesses.length}</span>/
+        <span class="bold">
+          {guessableTermsState.length +
+            guessesList.length -
+            correctDrinkTerms.length}
+        </span>
+      </span>
+    </div>
+    <div>
       {guessesList.map((term) => (
         <Term
           term={term}
@@ -40,12 +63,5 @@ export const Guessing = ({
       ))}
     </div>
     <hr />
-
-    {/* <button
-      class="guessingDoneButton green"
-      onClick={setGameState.bind(null, GAMESTATES.SHOWINGRESULTS)}
-    >
-      Lukitsen vastaukset
-    </button> */}
   </div>
 );
