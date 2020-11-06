@@ -4,8 +4,8 @@ export const Guessing = ({
   guessableTermsState,
   handleGuessingDrink,
   guessesList,
-  setGameState,
-  GAMESTATES,
+  // setGameState,
+  // GAMESTATES,
   correctGuesses,
   correctDrinkTerms
 }) => (
@@ -19,8 +19,10 @@ export const Guessing = ({
               key={term}
               term={term}
               onClick={handleGuessingDrink}
-              isGuessed={false}
-              isCorrectlyGuessed={false}
+              // isGuessed={false}
+              // isCorrectlyGuessed={false}
+              // isCorrectlyGuessed={correctGuesses.includes(term)}
+              isCorrect={correctDrinkTerms.includes(term)}
             />
           ))}
         </div>
@@ -38,11 +40,11 @@ export const Guessing = ({
       </span>
       <span class="right">
         Arvattu väärin
-        {console.log(
+        {/* {console.log(
           guessableTermsState,
           correctDrinkTerms,
           guessableTermsState.includes((e) => !correctDrinkTerms.includes(e))
-        )}
+        )} */}
         <br />
         <span class="bold">{guessesList.length - correctGuesses.length}</span>/
         <span class="bold">
@@ -55,10 +57,13 @@ export const Guessing = ({
     <div>
       {guessesList.map((term) => (
         <Term
+          key={term}
           term={term}
           // onClick={handleGuessingDrink}
-          isGuessed={guessesList.includes(term)}
-          isCorrectlyGuessed={correctGuesses.includes(term)}
+          // isGuessed={guessesList.includes(term)}
+          initialShowResult={true}
+          // isCorrectlyGuessed={correctGuesses.includes(term)}
+          isCorrect={correctDrinkTerms.includes(term)}
         />
       ))}
     </div>

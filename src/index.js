@@ -84,8 +84,8 @@ function App() {
   const getCorrectGuesses = (_) =>
     guessesList.filter((guess) => correctDrinkTerms.includes(guess));
 
-  const restartWithSameCode = (_) =>
-    setNumOfRepeats(numOfRepeats + 1) || setGameState(GAMESTATES.GUESSING);
+  // const restartWithSameCode = (_) =>
+  //   setNumOfRepeats(numOfRepeats + 1) || setGameState(GAMESTATES.GUESSING);
 
   const restartFromScratch = (_) => window.location.reload();
 

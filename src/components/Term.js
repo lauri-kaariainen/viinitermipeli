@@ -1,20 +1,34 @@
+import { useState } from "preact/hooks";
+
 export const Term = ({
   term,
   onClick = (_) => _,
-  isGuessed,
-  isCorrectlyGuessed
+  initialShowResult,
+  isCorrect
 }) => {
+  const [showsResult, setShowsResult] = useState(false);
+
   return (
     <div
       class={
         "result" +
-        (isGuessed ? " selected" : " ") +
-        (isCorrectlyGuessed ? " correctGuess" : " ")
+        // (isGuessed && showsResult ? " selected" : " ") +
+        (initialShowResult || showsResult ? " selected" : "") +
+        (isCorrect && (showsResult || initialShowResult)
+          ? " correctGuess"
+          : " ")
       }
     >
       <div>
-        <button onClick={onClick.bind(null, term)}>{term}</button>
-        {isCorrectlyGuessed ? "🌟" : ""}
+        <button
+          onClick={(_) => {
+            setShowsResult(true);
+            setTimeout((__) => onClick(term), 200);
+          }}
+        >
+          {term}
+        </button>
+        {isCorrect && showsResult ? "🌟" : ""}
       </div>
     </div>
   );
